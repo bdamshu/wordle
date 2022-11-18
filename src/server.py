@@ -29,3 +29,20 @@ class Wordle:
 
         eval_str = ''.join(evaluation)
         return eval_str
+
+
+class InteractiveWordle:
+
+    def __init__(self):
+        pass
+
+    def evaluate(self, guess):
+        confirm = 'n'
+        while confirm != 'y':
+            evaluation = input('Evaluation: ')
+            confirm = input('Confirm [y/n]: ')
+            # Some validation
+            if len(evaluation) != 5:
+                confirm = 'n'
+
+        return evaluation
