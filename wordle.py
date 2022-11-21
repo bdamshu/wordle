@@ -21,16 +21,16 @@ from collections import Counter
 
 def get_letter_probabilities(dataset):
     letters_overall_count = Counter()
-    position_letters_count = {}
+    letters_position_count = {}
     for word in dataset:
         for idx, letter in enumerate(word):
             letters_overall_count.update(letter)
-            if idx in position_letters_count:
-                position_letters_count[idx].update(letter)
+            if idx in letters_position_count:
+                letters_position_count[idx].update(letter)
             else:
-                position_letters_count[idx] = Counter(letter)
+                letters_position_count[idx] = Counter(letter)
                 
-    return letters_overall_count, position_letters_count
+    return letters_overall_count, letters_position_count
 
 
 # In[3]:
@@ -38,16 +38,16 @@ def get_letter_probabilities(dataset):
 
 # calculate weight of each word: probability of letter at position 'i' * probability of letter
 
-def get_weight_per_word(dataset, letters_overall_count, position_letters_count):
-    weights_per_word = []
+def get_weight_per_word(dataset, letters_overall_count, letters_position_count):
+    word_weights = []
     for word in dataset:
         weight = 0
         for idx, letter in enumerate(word):
-            weight += (position_letters_count[idx][letter]/sum(position_letters_count[idx].values())) * (letters_overall_count[letter]/sum(letters_overall_count.values()))
-        weights_per_word.append( (weight, word) )
-    weights_per_word.sort(key = lambda tup: tup[0], reverse=True)
+            weight += (letters_position_count[idx][letter]/sum(letters_position_count[idx].values())) * (letters_overall_count[letter]/sum(letters_overall_count.values()))
+        word_weights.append( (weight, word) )
+    word_weights.sort(key = lambda tup: tup[0], reverse=True)
     
-    return weights_per_word
+    return word_weights
 
 
 # In[4]:
@@ -56,39 +56,15 @@ def get_weight_per_word(dataset, letters_overall_count, position_letters_count):
 # identify words which don't have repeating letters
 
 def get_words_unique_letters(dataset):
-    non_repeating_letters_words = []
+    words_unique_letters = []
     for weight, word in dataset:
         if len(set(word)) == 5:
-            non_repeating_letters_words.append( (weight, word) )
+            words_unique_letters.append( (weight, word) )
         
-    return non_repeating_letters_words
+    return words_unique_letters
 
 
 # In[5]:
-
-
-# identify words combos (non-letter-repeating) and weights of such combos
-
-def get_words_combos_unique_letters(dataset):
-    unique_letters_words = []
-    idx = 0
-    while idx < len(dataset):
-        weight_combo = 0
-        words_combo = []
-        used_letters = set()
-        for weight, word in dataset[idx:]:
-            if set(word).isdisjoint(used_letters):
-                weight_combo += weight
-                words_combo.append(word)
-                used_letters.update(word)
-        unique_letters_words.append( [weight_combo, *words_combo] )
-        idx += 1
-    unique_letters_words.sort(key = lambda ls : ls[0], reverse=True)            
-        
-    return unique_letters_words
-
-
-# In[6]:
 
 
 # letter is absent : remove words from dataset that contain the letter
@@ -147,9 +123,8 @@ def get_recommendations(dataset):
         if not words_unique_letters:
             print(f'No more words with non-repeating letters')
             return weights_per_word
-        words_combos_max_weight = get_words_combos_unique_letters(words_unique_letters)
-
-        return words_combos_max_weight
+        
+        return words_unique_letters
 
 
 # In[8]:
@@ -163,11 +138,11 @@ print(f'Best guess: {initial_recommendations[0]}')
 # In[9]:
 
 
-# guess1 = brine
+# guess1 = saute
 
-absent_letters = ['b', 'i', 'e']
-present_letters_wrong_pos = {'r': 1, 'n': 3}
-present_letters_correct_pos = None
+absent_letters = ['u', 't', 'e']
+present_letters_wrong_pos = {'a': 1}
+present_letters_correct_pos = {'s': 0}
 reduced_dataset = modify_dataset(words_5_letters, absent_letters, present_letters_wrong_pos, present_letters_correct_pos)
 recommendations = get_recommendations(reduced_dataset)
 print(f'There are {len(recommendations)} recommendations.')
@@ -177,11 +152,11 @@ print(f'Best guess: {recommendations[0]}')
 # In[10]:
 
 
-# guess2 = sandy
+# guess2 = shark
 
-absent_letters = ['d', 'y']
-present_letters_wrong_pos = {'a': 1, 'n': 2} 
-present_letters_correct_pos = {'s': 0}
+absent_letters = ['h', 'k']
+present_letters_wrong_pos = None
+present_letters_correct_pos = {'s': 0, 'a': 2, 'r': 3}
 reduced_dataset = modify_dataset(reduced_dataset, absent_letters, present_letters_wrong_pos, present_letters_correct_pos)
 recommendations = get_recommendations(reduced_dataset)
 print(f'There are {len(recommendations)} recommendations.')
@@ -191,11 +166,11 @@ print(f'Best guess: {recommendations[0]}')
 # In[11]:
 
 
-# guess3 = snark
+# guess3 = scary
 
-absent_letters = ['k']
+absent_letters = ['c', 'y']
 present_letters_wrong_pos = None
-present_letters_correct_pos = {'s': 0, 'n': 1, 'a': 2, 'r': 3}
+present_letters_correct_pos = {'s': 0, 'a': 2, 'r': 3}
 reduced_dataset = modify_dataset(reduced_dataset, absent_letters, present_letters_wrong_pos, present_letters_correct_pos)
 recommendations = get_recommendations(reduced_dataset)
 print(f'There are {len(recommendations)} recommendations.')
