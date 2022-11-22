@@ -1,24 +1,16 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
-
-
 from english_words import english_words_lower_set
+from collections import Counter
 
 words_5_letters = [ word for word in english_words_lower_set
                    if (len(word) == 5) and ("'" not in word) and ('.' not in word) ]
 print(f'There are {len(words_5_letters)} 5-letter english words.')
 
 
-# In[2]:
-
-
 # calculate probability of each letter, and
 # calculate probability of each letter at position 0, 1, 2, 3, 4
-
-from collections import Counter
-
 def get_letter_probabilities(dataset):
     letters_overall_count = Counter()
     letters_position_count = {}
@@ -33,11 +25,7 @@ def get_letter_probabilities(dataset):
     return letters_overall_count, letters_position_count
 
 
-# In[3]:
-
-
 # calculate weight of each word: probability of letter at position 'i' * probability of letter
-
 def get_weight_per_word(dataset, letters_overall_count, letters_position_count):
     word_weights = []
     for word in dataset:
@@ -50,11 +38,7 @@ def get_weight_per_word(dataset, letters_overall_count, letters_position_count):
     return word_weights
 
 
-# In[4]:
-
-
 # identify words which don't have repeating letters
-
 def get_words_unique_letters(dataset):
     words_unique_letters = []
     for weight, word in dataset:
@@ -64,13 +48,9 @@ def get_words_unique_letters(dataset):
     return words_unique_letters
 
 
-# In[5]:
-
-
 # letter is absent : remove words from dataset that contain the letter
 # letter is present, correct position: remove words from dataset with letter not in position
 # letter is present, wrong position: remove words from dataset without the letter, and letter in position of guess
-
 def modify_dataset(dataset, absent_letters, present_letters_wrong_pos, present_letters_correct_pos):    
     if absent_letters:
         reduced_dataset = []
@@ -110,9 +90,6 @@ def modify_dataset(dataset, absent_letters, present_letters_wrong_pos, present_l
     return dataset
 
 
-# In[7]:
-
-
 def get_recommendations(dataset):
     if len(dataset) == 1:
         return dataset
@@ -127,15 +104,9 @@ def get_recommendations(dataset):
         return words_unique_letters
 
 
-# In[8]:
-
-
 initial_recommendations = get_recommendations(words_5_letters)
 print(f'There are {len(initial_recommendations)} recommendations.')
 print(f'Best guess: {initial_recommendations[0]}')
-
-
-# In[9]:
 
 
 # guess1 = saute
@@ -147,32 +118,3 @@ reduced_dataset = modify_dataset(words_5_letters, absent_letters, present_letter
 recommendations = get_recommendations(reduced_dataset)
 print(f'There are {len(recommendations)} recommendations.')
 print(f'Best guess: {recommendations[0]}')
-
-
-# In[10]:
-
-
-# guess2 = shark
-
-absent_letters = ['h', 'k']
-present_letters_wrong_pos = None
-present_letters_correct_pos = {'s': 0, 'a': 2, 'r': 3}
-reduced_dataset = modify_dataset(reduced_dataset, absent_letters, present_letters_wrong_pos, present_letters_correct_pos)
-recommendations = get_recommendations(reduced_dataset)
-print(f'There are {len(recommendations)} recommendations.')
-print(f'Best guess: {recommendations[0]}')
-
-
-# In[11]:
-
-
-# guess3 = scary
-
-absent_letters = ['c', 'y']
-present_letters_wrong_pos = None
-present_letters_correct_pos = {'s': 0, 'a': 2, 'r': 3}
-reduced_dataset = modify_dataset(reduced_dataset, absent_letters, present_letters_wrong_pos, present_letters_correct_pos)
-recommendations = get_recommendations(reduced_dataset)
-print(f'There are {len(recommendations)} recommendations.')
-print(f'Best guess: {recommendations[0]}')
-
