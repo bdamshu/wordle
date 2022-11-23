@@ -28,7 +28,6 @@ def test_get_letter_probabilities():
                                         2: Counter({'p': 1, 's': 1, 'r': 1}),
                                         3: Counter({'l': 1, 'o': 1, 'p': 1}),
                                         4: Counter({'e': 1, 'n': 1, 'h': 1}),}, 'letter counts per position do not match'
-test_get_letter_probabilities()
 
 def test_get_weight_per_word():
     dataset = ['apple', 'bison', 'morph']
@@ -36,13 +35,11 @@ def test_get_weight_per_word():
     word_wieghts = wordle.get_weight_per_word(dataset, letters_total_count, letters_position_count)
     word_wieghts = [(round(weight, 6), word) for weight, word in word_wieghts]
     assert word_wieghts == [(round(9/45, 6), 'apple'), (round(8/45, 6), 'morph'), (round(6/45, 6), 'bison')]
-test_get_weight_per_word()
 
 def test_get_words_unique_letters():
     dataset = [(0, 'apple'), (0, 'bison'), (0, 'morph')]
     unique_letters_words = wordle.get_words_unique_letters(dataset)
     assert unique_letters_words == [(0, 'bison'), (0, 'morph')]
-test_get_words_unique_letters()
 
 def test_modify_dataset():
     dataset = ['apple', 'amass', 'asset', 'bison', 'morph']
@@ -52,4 +49,3 @@ def test_modify_dataset():
     assert present_letters_wrong_position == ['amass', 'morph']
     present_letters_correct_position = wordle.modify_dataset(dataset, None, None, {'s': 2})
     assert present_letters_correct_position == ['asset', 'bison']
-test_modify_dataset()
