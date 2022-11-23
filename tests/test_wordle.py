@@ -6,11 +6,11 @@ root_dir = Path(__file__).resolve().parents[1]
 if str(root_dir) not in sys.path:
     sys.path.append(str(root_dir))
 
-import src.wordle as wordle
+import src.wordle_prediction as wordle_prediction
 
 def test_get_letter_probabilities():
     dataset = ['apple', 'bison', 'morph']
-    letters_total_count, letters_position_count = wordle.get_letter_probabilities(dataset)
+    letters_total_count, letters_position_count = wordle_prediction.get_letter_probabilities(dataset)
     assert letters_total_count == Counter({'a': 1,
                                             'p': 3,
                                             'l': 1,
@@ -31,21 +31,21 @@ def test_get_letter_probabilities():
 
 def test_get_weight_per_word():
     dataset = ['apple', 'bison', 'morph']
-    letters_total_count, letters_position_count = wordle.get_letter_probabilities(dataset)
-    word_wieghts = wordle.get_weight_per_word(dataset, letters_total_count, letters_position_count)
+    letters_total_count, letters_position_count = wordle_prediction.get_letter_probabilities(dataset)
+    word_wieghts = wordle_prediction.get_weight_per_word(dataset, letters_total_count, letters_position_count)
     word_wieghts = [(round(weight, 6), word) for weight, word in word_wieghts]
     assert word_wieghts == [(round(9/45, 6), 'apple'), (round(8/45, 6), 'morph'), (round(6/45, 6), 'bison')]
 
 def test_get_words_unique_letters():
     dataset = [(0, 'apple'), (0, 'bison'), (0, 'morph')]
-    unique_letters_words = wordle.get_words_unique_letters(dataset)
+    unique_letters_words = wordle_prediction.get_words_unique_letters(dataset)
     assert unique_letters_words == [(0, 'bison'), (0, 'morph')]
 
 def test_modify_dataset():
     dataset = ['apple', 'amass', 'asset', 'bison', 'morph']
-    absent_letters = wordle.modify_dataset(dataset, ['p'], None, None)
+    absent_letters = wordle_prediction.modify_dataset(dataset, ['p'], None, None)
     assert absent_letters == ['amass', 'asset', 'bison']
-    present_letters_wrong_position = wordle.modify_dataset(dataset, None, {'m': 2}, None)
+    present_letters_wrong_position = wordle_prediction.modify_dataset(dataset, None, {'m': 2}, None)
     assert present_letters_wrong_position == ['amass', 'morph']
-    present_letters_correct_position = wordle.modify_dataset(dataset, None, None, {'s': 2})
+    present_letters_correct_position = wordle_prediction.modify_dataset(dataset, None, None, {'s': 2})
     assert present_letters_correct_position == ['asset', 'bison']
