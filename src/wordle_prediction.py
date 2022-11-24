@@ -92,14 +92,11 @@ def modify_dataset(dataset, absent_letters, present_letters_wrong_pos, present_l
 
 
 def get_recommendations(dataset):
-    if len(dataset) == 1:
-        return dataset
-    else:
-        letters_overall_count, position_letters_count = get_letter_probabilities(dataset)
-        weights_per_word = get_weight_per_word(dataset, letters_overall_count, position_letters_count)
-        words_unique_letters = get_words_unique_letters(weights_per_word)
-        if not words_unique_letters:
-            print(f'No more words with non-repeating letters')
-            return weights_per_word
-        
-        return words_unique_letters
+    letters_overall_count, position_letters_count = get_letter_probabilities(dataset)
+    weights_per_word = get_weight_per_word(dataset, letters_overall_count, position_letters_count)
+    words_unique_letters = get_words_unique_letters(weights_per_word)
+    if not words_unique_letters:
+        print(f'No more words with non-repeating letters')
+        return [word for _, word in weights_per_word]
+    
+    return [word for _, word in words_unique_letters]

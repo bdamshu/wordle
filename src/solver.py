@@ -19,7 +19,7 @@ class WordleSolver:
             self.reset_constraints()
             recommendations = get_recommendations(self.dictionary)
             if print_guess:
-                print(*recommendations[:3])
+                print('Recommendations:', *recommendations[:3])
             word_guessed, evaluation = game.evaluate()
             self.update_constraints(word_guessed, evaluation)
             self.dictionary = modify_dataset(self.dictionary, self.absent, self.present_not_at_idx, self.present_at_idx)
