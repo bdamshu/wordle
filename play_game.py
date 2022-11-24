@@ -1,5 +1,5 @@
-from server import Wordle
-from solver import WordleSolver
+from src.server import Wordle
+from src.solver import WordleSolver
 from scipy.stats import describe
 from tqdm import tqdm
 
