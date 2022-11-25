@@ -1,12 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-from english_words import english_words_lower_set
 from collections import Counter
-
-words_5_letters = [ word for word in english_words_lower_set
-                   if (len(word) == 5) and ("'" not in word) and ('.' not in word) ]
-print(f'There are {len(words_5_letters)} 5-letter english words.')
 
 
 # calculate probability of each letter, and
@@ -62,27 +57,33 @@ def modify_dataset(dataset, absent_letters, present_letters_wrong_pos, present_l
     if present_letters_wrong_pos:
         reduced_dataset = []
         for word in dataset:
-            for letter, position in present_letters_wrong_pos.items():
-                if word[position] == letter:
-                    match = True
+            for letter, idxs in present_letters_wrong_pos.items():
+                for position in idxs:
+                    if word[position] == letter:
+                        match = True
+                        break
+                    else:
+                        match = False
+                if match:
                     break
-                else:
-                    match = False
             if match:
                 continue
-            if not set(word).isdisjoint(set(present_letters_wrong_pos.keys())):
+            if set(present_letters_wrong_pos.keys()).issubset(set(word)):
                 reduced_dataset.append(word)
         dataset = reduced_dataset
         
     if present_letters_correct_pos:
         reduced_dataset = []
         for word in dataset:
-            for letter, position in present_letters_correct_pos.items():
-                if word[position] != letter:
-                    match = False
+            for letter, idxs in present_letters_correct_pos.items():
+                for position in idxs:
+                    if word[position] != letter:
+                        match = False
+                        break
+                    else:
+                        match = True
+                if not match:
                     break
-                else:
-                    match = True
             if match:
                 reduced_dataset.append(word)
         dataset = reduced_dataset
@@ -91,30 +92,11 @@ def modify_dataset(dataset, absent_letters, present_letters_wrong_pos, present_l
 
 
 def get_recommendations(dataset):
-    if len(dataset) == 1:
-        return dataset
-    else:
-        letters_overall_count, position_letters_count = get_letter_probabilities(dataset)
-        weights_per_word = get_weight_per_word(dataset, letters_overall_count, position_letters_count)
-        words_unique_letters = get_words_unique_letters(weights_per_word)
-        if not words_unique_letters:
-            print(f'No more words with non-repeating letters')
-            return weights_per_word
-        
-        return words_unique_letters
-
-
-initial_recommendations = get_recommendations(words_5_letters)
-print(f'There are {len(initial_recommendations)} recommendations.')
-print(f'Best guess: {initial_recommendations[0]}')
-
-
-# guess1 = saute
-
-absent_letters = ['u', 't', 'e']
-present_letters_wrong_pos = {'a': 1}
-present_letters_correct_pos = {'s': 0}
-reduced_dataset = modify_dataset(words_5_letters, absent_letters, present_letters_wrong_pos, present_letters_correct_pos)
-recommendations = get_recommendations(reduced_dataset)
-print(f'There are {len(recommendations)} recommendations.')
-print(f'Best guess: {recommendations[0]}')
+    letters_overall_count, position_letters_count = get_letter_probabilities(dataset)
+    weights_per_word = get_weight_per_word(dataset, letters_overall_count, position_letters_count)
+    words_unique_letters = get_words_unique_letters(weights_per_word)
+    if not words_unique_letters:
+        print(f'No more words with non-repeating letters')
+        return [word for _, word in weights_per_word]
+    
+    return [word for _, word in words_unique_letters]

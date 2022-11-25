@@ -36,7 +36,8 @@ class InteractiveWordle:
     def __init__(self):
         pass
 
-    def evaluate(self, guess):
+    def evaluate(self):
+        word_guessed = input('Word guess: ')    # not safe to assume 1st prediction will be accepted in NYT.
         confirm = 'n'
         while confirm != 'y':
             evaluation = input('Evaluation: ')
@@ -45,4 +46,4 @@ class InteractiveWordle:
             if len(evaluation) != 5:
                 confirm = 'n'
 
-        return evaluation
+        return word_guessed, evaluation
