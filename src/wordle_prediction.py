@@ -68,7 +68,7 @@ def modify_dataset(dataset, absent_letters, present_letters_wrong_pos, present_l
                     break
             if match:
                 continue
-            if not set(word).isdisjoint(set(present_letters_wrong_pos.keys())):
+            if set(present_letters_wrong_pos.keys()).issubset(set(word)):
                 reduced_dataset.append(word)
         dataset = reduced_dataset
         
