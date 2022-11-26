@@ -46,7 +46,8 @@ def get_words_unique_letters(dataset):
 # letter is absent : remove words from dataset that contain the letter
 # letter is present, correct position: remove words from dataset with letter not in position
 # letter is present, wrong position: remove words from dataset without the letter, and letter in position of guess
-def modify_dataset(dataset, absent_letters, present_letters_wrong_pos, present_letters_correct_pos):    
+def modify_dataset(dataset, absent_letters, present_letters_wrong_pos,
+                    present_letters_correct_pos, letters_absent_at_pos):    
     if absent_letters:
         reduced_dataset = []
         for word in dataset:
@@ -87,6 +88,22 @@ def modify_dataset(dataset, absent_letters, present_letters_wrong_pos, present_l
             if match:
                 reduced_dataset.append(word)
         dataset = reduced_dataset
+    
+    if letters_absent_at_pos:
+        reduced_dataset = []
+        for word in dataset:
+            for letter, idxs in letters_absent_at_pos.items():
+                for position in idxs:
+                    if word[position] == letter:
+                        match = True
+                        break
+                    else:
+                        match = False
+                if match:
+                    break
+            if not match:
+                reduced_dataset.append(word)
+        dataset = reduced_dataset
         
     return dataset
 
@@ -96,7 +113,7 @@ def get_recommendations(dataset):
     weights_per_word = get_weight_per_word(dataset, letters_overall_count, position_letters_count)
     words_unique_letters = get_words_unique_letters(weights_per_word)
     if not words_unique_letters:
-        print(f'No more words with non-repeating letters')
+        # print(f'No more words with non-repeating letters')
         return [word for _, word in weights_per_word]
     
     return [word for _, word in words_unique_letters]

@@ -4,7 +4,7 @@ from scipy.stats import describe
 from tqdm import tqdm
 
 
-wordlist_path = '<put in wordlist path here>'
+wordlist_path = r'wordlists/five_letter_words_english_words.txt'
 solver = WordleSolver(wordlist_path)
 all_words = solver.dictionary
 
