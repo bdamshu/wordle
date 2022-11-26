@@ -9,8 +9,8 @@ logging.basicConfig(encoding='utf-8', level=logging.INFO)
 class WordleSolver:
     def __init__(self, path_to_wordlist: str):
         with open(path_to_wordlist) as f:
-            self.dictionary = [word.rstrip() for word in f]
-        self._unpruned_dictionary = self.dictionary
+            self._unpruned_dictionary = [word.rstrip() for word in f]
+        self.dictionary = self._unpruned_dictionary
 
     def solve(self, game, print_guess=False, attempt_num=1):
         if attempt_num == 1:
