@@ -18,10 +18,13 @@ for word in tqdm(all_words):
     except ValueError:
         print(f'Can not solve {word}')
 
-    results.append(attempts)
+    results.append((attempts, word))
     if word != guess:
         print(f'Wrong solution for {word}')
 
-print( describe(results) )
+print( describe( [attempts for attempts, _ in results] ) )
+results.sort(key=lambda tup: tup[0], reverse=True)
+with open('summary.txt', 'w') as f:
+    f.write('\n'.join(f'{tup[0]}, {tup[1]}' for tup in results))
 
 
