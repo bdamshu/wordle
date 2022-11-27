@@ -12,32 +12,32 @@ class WordleSolver:
             self._unpruned_dictionary = [word.rstrip() for word in f]
         self.dictionary = self._unpruned_dictionary
 
-    def solve(self, game, print_guess=False, attempt_num=1):
-        if attempt_num == 1:
-            self.dictionary = self._unpruned_dictionary
-
+    def solve(self, game):
+        
         self.reset_constraints()
-        recommendations = get_recommendations(self.dictionary)
-        if print_guess:
-            print('Recommendations:', *recommendations[:3])
-        if isinstance(game,  InteractiveWordle):
-            word_guessed, evaluation = game.evaluate()
-        if isinstance(game, Wordle):
-            word_guessed = recommendations[0]
-            evaluation = game.evaluate(word_guessed)
-        if evaluation.upper() == 'GGGGG':
-            return word_guessed, attempt_num
-        self.update_constraints(word_guessed, evaluation)
-        self.dictionary = modify_dataset(self.dictionary, self.absent, self.present_not_at_idx,
-                                            self.present_at_idx, self.absent_at_idx)
-        if self.dictionary:
+        attempt_num = 0
+        evaluation = 'xxxxx'
+        while evaluation.upper() != 'GGGGG':
             attempt_num += 1
-            return self.solve(game, print_guess=print_guess, attempt_num=attempt_num)
-        else:
-            raise ValueError('No words left in pruned dictionary.')
+            recommendations = get_recommendations(self.dictionary)
+            if not recommendations:
+                raise ValueError('No words left to recommend.')
+
+            if isinstance(game, InteractiveWordle):
+                print('Recommendations:',*recommendations[:3])
+                word_guessed, evaluation = game.evaluate()
+            if isinstance(game, Wordle):
+                word_guessed = recommendations[0]
+                evaluation = game.evaluate(word_guessed)
+
+            self.update_constraints(word_guessed, evaluation)
+            self.dictionary = modify_dataset(self.dictionary, self.absent, self.present_not_at_idx,
+                                            self.present_at_idx, self.absent_at_idx)
+        return word_guessed, attempt_num
 
 
     def reset_constraints(self):
+        self.dictionary = self._unpruned_dictionary
         self.absent = set()
         self.absent_at_idx = defaultdict(set)
         self.present_at_idx = defaultdict(set)
