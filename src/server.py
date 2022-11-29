@@ -25,7 +25,7 @@ class Wordle:
             guess_ltr = guess[idx]
             if evaluation[idx]!='G' and guess[idx] in self.chars and counts[guess_ltr] :
                 evaluation[idx] = 'Y'
-                counts[guess[idx]]
+                counts[guess[idx]] -= 1
 
         eval_str = ''.join(evaluation)
         return eval_str

@@ -19,6 +19,8 @@ def test_green():
 def test_yellow():
     myword = Wordle('chief')
     assert myword.evaluate('lucky') == 'xxYxx'
+    myword = Wordle('occur')
+    assert myword.evaluate('berry') == 'xxYxx'
 
 def test_double_letters():
     myword = Wordle('cooks')
