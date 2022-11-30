@@ -43,9 +43,9 @@ def test_get_words_unique_letters():
 
 def test_modify_dataset():
     dataset = ['apple', 'amass', 'asset', 'bison', 'morph']
-    absent_letters = wordle_prediction.modify_dataset(dataset, ['p'], None, None)
+    absent_letters = wordle_prediction.modify_dataset(dataset, set('p'), None, None)
     assert absent_letters == ['amass', 'asset', 'bison']
-    present_letters_wrong_position = wordle_prediction.modify_dataset(dataset, None, {'m': 2}, None)
+    present_letters_wrong_position = wordle_prediction.modify_dataset(dataset, None, {'m': {2}}, None)
     assert present_letters_wrong_position == ['amass', 'morph']
-    present_letters_correct_position = wordle_prediction.modify_dataset(dataset, None, None, {'s': 2})
+    present_letters_correct_position = wordle_prediction.modify_dataset(dataset, None, None, {'s': {2}})
     assert present_letters_correct_position == ['asset', 'bison']
