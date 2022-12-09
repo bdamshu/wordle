@@ -4,9 +4,9 @@ from scipy.stats import describe
 from tqdm import tqdm
 
 
-wordlist_path = '<put in wordlist path here>'
+wordlist_path = r'wordlists/five_letter_words_english_words.txt'
 solver = WordleSolver(wordlist_path)
-all_words = solver.dictionary
+all_words = solver._unpruned_dictionary
 
 solutions = {}
 results = []
@@ -18,10 +18,12 @@ for word in tqdm(all_words):
     except ValueError:
         print(f'Can not solve {word}')
 
-    results.append(attempts)
+    results.append((attempts, word))
     if word != guess:
         print(f'Wrong solution for {word}')
 
-print( describe(results) )
+print( describe([attempts for attempts, _ in results]))
 
-
+results.sort(key=lambda tup: tup[0], reverse=True)
+with open('summary.txt', 'w') as f:
+    f.write('\n'.join(f'{attempts}, {word}' for attempts, word in results))
