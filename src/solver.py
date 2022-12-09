@@ -11,25 +11,26 @@ class WordleSolver:
         with open(path_to_wordlist) as f:
             self._unpruned_dictionary = [word.rstrip() for word in f]
 
-    def solve(self, game):
+    def solve(self, idx_game_tup):
+        word_idx, game = idx_game_tup
         guess_num = 0
         evaluation = 'xxxxx'
         self.reset_constraints()
         while evaluation.upper() != 'GGGGG':
-            recommendations = get_recommendations(self.dictionary, self.absent, self.present_at_idx,
+            self.dictionary = get_recommendations(self.dictionary, self.absent, self.present_at_idx,
                                                         self.present_not_at_idx, self.guessed_words)
             if isinstance(game, Wordle):
-                word_guessed = recommendations[0]
+                word_guessed = self.dictionary[0]
                 evaluation = game.evaluate(word_guessed)
             elif isinstance(game, InteractiveWordle):
-                print('Recommendations:', recommendations[:3])
+                print('Recommendations:', self.dictionary[:3])
                 word_guessed, evaluation = game.evaluate()
             else:
                 raise TypeError('Unrecognized game type.')
 
             guess_num += 1
             self.update_constraints(word_guessed, evaluation)
-        return word_guessed, guess_num
+        return word_idx, word_guessed, guess_num
 
     def reset_constraints(self):
         self.dictionary = self._unpruned_dictionary
