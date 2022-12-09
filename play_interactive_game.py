@@ -6,4 +6,4 @@ game = InteractiveWordle()
 wordlist_path = r'wordlists/five_letter_words_english_words.txt'
 solver = WordleSolver(wordlist_path)
 
-solver.solve(game)
+solver.solve( (0,game) )
